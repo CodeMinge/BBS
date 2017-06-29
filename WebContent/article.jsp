@@ -1,4 +1,15 @@
 <%@page pageEncoding="GB18030" %>
+<%@page import="java.sql.*"%>
+
+<%!
+private void tree(Connection conn, int id, int grade) {
+	
+}
+%>
+
+<%
+%>
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
