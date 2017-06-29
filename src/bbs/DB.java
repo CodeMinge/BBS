@@ -23,7 +23,7 @@ public class DB {
 		return conn;
 	}
 	
-	public static Statement getStmt(Connection conn) {
+	public static Statement createStmt(Connection conn) {
 		Statement stmt = null;
 		
 		try {

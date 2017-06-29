@@ -1,20 +1,45 @@
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page pageEncoding="GB18030" %>
-<%@page import="java.sql.*"%>
+<%@page import="java.sql.*, java.io.*, bbs.*, java.util.*"%>
 
 <%!
-private void tree(Connection conn, int id, int grade) {
-	
+private void tree(List<Article> articles, Connection conn, int id, int grade) {
+	String sql = "select * from article where pid = " + id;
+	Statement stmt = DB.createStmt(conn);
+	ResultSet rs = DB.executeQuery(stmt, sql);
+	try {
+		while(rs.next()) {
+			Article a = new Article();
+			a.setId(rs.getInt("id"));
+			a.setPid(rs.getInt("pid"));
+			a.setRootId(rs.getInt("rootId"));
+			a.setTitle(rs.getString("title"));
+			a.setLeaf(rs.getInt("isLeaf") == 0 ? true : false);
+			a.setPdate(rs.getTimestamp("pdate"));
+			a.setGrade(grade);
+			articles.add(a);
+			if(!a.isLeaf()) {
+				tree(articles, conn, a.getId(), grade + 1);
+			}
+		}
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}	
 }
 %>
 
 <%
+List<Article> articles = new ArrayList<Article>();
+Connection conn = DB.getConn();
+tree(articles, conn, 0, 0);
+DB.close(conn);
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
 <title>Java|Java世界_中文论坛|ChinaJavaWorld技术论坛 : Java语言*初级版</title>
-<meta http-equiv="content-type" content="text/html; charset=GBK">
+<meta http-equiv="content-type" content="text/html; charList=GBK">
 <link rel="stylesheet" type="text/css" href="images/style.css" title="Integrated Styles">
 <script language="JavaScript" type="text/javascript" src="images/global.js"></script>
 <link rel="alternate" type="application/rss+xml" title="RSS" href="http://bbs.chinajavaworld.com/rss/rssmessages.jspa?forumID=20">
@@ -79,6 +104,13 @@ private void tree(Connection conn, int id, int grade) {
                   </tr>
                 </thead>
                 <tbody>
+                  <%
+                  for(Iterator<Article> it = articles.iterator(); it.hasNext(); ) {
+                	  Article a = it.next();
+                	  String perStr = "";
+                	  for(int i = 0; i < a.getGrade(); i ++)
+                		  perStr += "----";
+                  %>
                   <tr class="jive-even">
                     <td class="jive-first" nowrap="nowrap" width="1%"><div class="jive-bullet"> <img src="images/read-16x16.gif" alt="已读" border="0" height="16" width="16">
                         <!-- div-->
@@ -89,13 +121,14 @@ private void tree(Connection conn, int id, int grade) {
                       
                       
                       &nbsp;</td>
-                    <td class="jive-thread-name" width="95%"><a id="jive-thread-1" href="http://bbs.chinajavaworld.com/thread.jspa?threadID=744236&amp;tstart=25">初学java遇一难题！！望大家能帮忙一下 谢谢了</a></td>
+                    <td class="jive-thread-name" width="95%"><a id="jive-thread-1" href="articleDetail.jsp?id=<%=a.getId()%>"><%=perStr + a.getTitle() %>></a></td>
                     <td class="jive-author" nowrap="nowrap" width="1%"><span class=""> <a href="http://bbs.chinajavaworld.com/profile.jspa?userID=226030">fei870407</a> </span></td>
                     <td class="jive-view-count" width="1%"> 104</td>
                     <td class="jive-msg-count" width="1%"> 5</td>
-                    <td class="jive-last" nowrap="nowrap" width="1%"><div class="jive-last-post"> 2007-9-13 上午9:31 <br>
+                    <td class="jive-last" nowrap="nowrap" width="1%"><div class="jive-last-post"> <%=new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(a.getPdate()) %>> <br>
                         by: <a href="http://bbs.chinajavaworld.com/thread.jspa?messageID=780182#780182" title="jingjiangjun" style="">jingjiangjun &#187;</a> </div></td>
                   </tr>
+                  <%-- 
                   <tr class="jive-odd">
                     <td class="jive-first" nowrap="nowrap" width="1%"><div class="jive-bullet"> <img src="images/read-16x16.gif" alt="已读" border="0" height="16" width="16">
                         <!-- div-->
@@ -113,6 +146,10 @@ private void tree(Connection conn, int id, int grade) {
                     <td class="jive-last" nowrap="nowrap" width="1%"><div class="jive-last-post"> 2007-9-13 上午8:40 <br>
                         by: <a href="http://bbs.chinajavaworld.com/thread.jspa?messageID=780172#780172" title="downing114" style="">downing114 &#187;</a> </div></td>
                   </tr>
+                  --%>
+                  <%
+                  }
+                  %>
                 </tbody>
               </table>
             </div>
