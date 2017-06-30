@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class DB {
 	public static final String DRIVERNAME = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-	public static final String DBURL = "jdbc:sqlserver://localhost:1433;DatabaseName=BBS";
+	public static final String DBURL = "jdbc:sqlserver://localhost:1433;DatabaseName=bbs";
 	public static final String LOGINNAME = "sa";
 	public static final String LOGINPWD = "zxc1234";
 	
@@ -35,7 +35,20 @@ public class DB {
 		return stmt;
 	}
 	
-	public static ResultSet executeQuery(Statement stmt,String sql) {
+	public static PreparedStatement prepareStmt(Connection conn, String sql) {
+		PreparedStatement ps = null;
+		
+		try {
+			ps = conn.prepareStatement(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return ps;
+	}
+	
+	public static ResultSet executeQuery(Statement stmt, String sql) {
 		ResultSet rs = null;
 		
 		try {

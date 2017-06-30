@@ -74,7 +74,7 @@ DB.close(rs);
       <tbody>
         <tr>
           <td class="jive-icon"><a href="http://bbs.chinajavaworld.com/post%21reply.jspa?threadID=744236"><img src="images/reply-16x16.gif" alt="回复本主题" border="0" height="16" width="16"></a></td>
-          <td class="jive-icon-label"><a id="jive-reply-thread" href="http://bbs.chinajavaworld.com/post%21reply.jspa?threadID=744236">回复本主题</a> </td>
+          <td class="jive-icon-label"><a id="jive-reply-thread" href="reply.jsp?id=<%=a.getId()%>&rootId=<%=a.getRootId()%>">回复本主题</a> </td>
         </tr>
       </tbody>
     </table>
