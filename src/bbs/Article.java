@@ -1,5 +1,7 @@
 package bbs;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 public class Article {
@@ -60,4 +62,19 @@ public class Article {
 	public void setGrade(int grade) {
 		this.grade = grade;
 	}
+	
+	public void initFromRs(ResultSet rs) {
+		try {
+			setId(rs.getInt("id"));
+			setPid(rs.getInt("pid"));
+			setRootId(rs.getInt("rootId"));
+			setTitle(rs.getString("title"));
+			setLeaf(rs.getInt("isLeaf") == 0 ? true : false);
+			setPdate(rs.getTimestamp("pdate"));
+			setCont(rs.getString("cont"));
+			setGrade(0);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+	}	
 }

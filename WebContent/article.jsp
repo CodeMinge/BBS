@@ -10,12 +10,7 @@ private void tree(List<Article> articles, Connection conn, int id, int grade) {
 	try {
 		while(rs.next()) {
 			Article a = new Article();
-			a.setId(rs.getInt("id"));
-			a.setPid(rs.getInt("pid"));
-			a.setRootId(rs.getInt("rootId"));
-			a.setTitle(rs.getString("title"));
-			a.setLeaf(rs.getInt("isLeaf") == 0 ? true : false);
-			a.setPdate(rs.getTimestamp("pdate"));
+			a.initFromRs(rs);
 			a.setGrade(grade);
 			articles.add(a);
 			if(!a.isLeaf()) {
@@ -24,7 +19,10 @@ private void tree(List<Article> articles, Connection conn, int id, int grade) {
 		}
 	} catch (SQLException e) {
 		e.printStackTrace();
-	}	
+	} finally {
+		DB.close(stmt);
+		DB.close(rs);
+	}
 }
 %>
 
