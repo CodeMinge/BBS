@@ -15,6 +15,10 @@ String cont = request.getParameter("cont");
 System.out.println(cont);
 
 Connection conn = DB.getConn();
+
+boolean autoCommit = conn.getAutoCommit();
+conn.setAutoCommit(false);
+
 String sql = "insert into article values(?, ?, ?, ?, GetDate(), ?)";
 PreparedStatement ps = DB.prepareStmt(conn, sql);
 ps.setInt(1, pid);
@@ -23,7 +27,13 @@ ps.setString(3, title);
 ps.setString(4, cont);
 ps.setInt(5, 0);
 ps.executeUpdate();
+Statement stmt = DB.createStmt(conn);
+stmt.executeUpdate("update article set isleaf = 1 where id = " + pid);
+
+conn.commit();
+conn.setAutoCommit(autoCommit);
 DB.close(ps);
+DB.close(stmt);
 DB.close(conn);
 %>    
 
